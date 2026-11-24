@@ -1,0 +1,29 @@
+# Usage: create .env with STUDIO_PASSWORD=... and DOMAIN=..., then: docker compose up -d --build
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      - STUDIO_PASSWORD=${STUDIO_PASSWORD}
+      - STUDIO_WORKERS=${STUDIO_WORKERS:-1}
+    volumes:
+      - studio-data:/data
+    expose:
+      - "8000"
+  caddy:
+    image: ${CADDY_IMAGE:-caddy:2}
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+volumes:
+  studio-data:
+  caddy-data:
+  caddy-config:

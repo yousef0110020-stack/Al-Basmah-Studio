@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0b0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="البصمة ستوديو">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico">
+<title>Al Basmah AI Media Studio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <img class="mark-img" src="/icons/icon-192.png" alt="">
+    <div>
+      <div class="brand-name"><span data-i18n="brand">البصمة</span> <span class="gold">AI Media Studio</span></div>
+      <div class="brand-sub" data-i18n="brand_sub">استوديو الوسائط الذكي - البصمة للعقارات</div>
+    </div>
+  </div>
+  <div class="row gap">
+    <button id="langBtn" class="ghost">English</button>
+    <button id="logoutBtn" class="ghost sm hidden" data-i18n="logout">خروج</button>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="photo" data-i18n="tab_photo">محرر الصور</button>
+  <button class="tab" data-tab="video" data-i18n="tab_video">محرر الفيديو</button>
+  <button class="tab" data-tab="brand" data-i18n="tab_brand">بيانات العقار والهوية</button>
+  <button class="tab" data-tab="library" data-i18n="tab_library">المكتبة</button>
+</nav>
+
+<main>
+<!-- ========================= PHOTO ========================= -->
+<section id="tab-photo" class="tabpane active">
+  <label class="dropzone" id="photoDrop">
+    <input type="file" id="photoInput" accept="image/*,.heic,.heif" multiple hidden>
+    <div class="dz-icon">⬆</div>
+    <div data-i18n="drop_photos">اسحب الصور وأفلتها هنا أو اضغط للاختيار</div>
+    <div class="muted small" data-i18n="originals_safe">الملفات الأصلية تُحفظ كما هي ولا يتم تعديلها أبدًا</div>
+  </label>
+  <div class="upbar hidden" id="photoUp"><div></div><span></span></div>
+
+  <div class="row between wrap gap">
+    <h3 data-i18n="your_photos">صورك</h3>
+    <div class="row gap">
+      <button class="ghost sm" id="selAll" data-i18n="select_all">تحديد الكل</button>
+      <button class="ghost sm" id="selNone" data-i18n="select_none">إلغاء التحديد</button>
+    </div>
+  </div>
+  <div class="grid" id="photoGrid"></div>
+
+  <div class="editor" id="photoEditor">
+    <div class="viewer-col">
+      <div class="viewer" id="viewer" dir="ltr">
+        <div class="placeholder" data-i18n="pick_photo">اختر صورة لبدء التعديل</div>
+      </div>
+      <div class="row gap wrap viewer-tools">
+        <span class="muted small" id="viewerHint"></span>
+      </div>
+    </div>
+
+    <div class="panel controls">
+      <div class="chips" id="photoStyles"></div>
+      <div class="analysis hidden" id="photoAnalysis"></div>
+
+      <details open><summary data-i18n="grp_light">الإضاءة</summary><div id="g_light"></div></details>
+      <details><summary data-i18n="grp_color">الألوان</summary><div id="g_color"></div></details>
+      <details><summary data-i18n="grp_detail">التفاصيل والتشويش</summary><div id="g_detail"></div></details>
+      <details><summary data-i18n="grp_geo">الزوايا والمنظور</summary>
+        <div id="g_geo"></div>
+        <label class="check"><input type="checkbox" id="autoWb"> <span data-i18n="auto_wb">توازن أبيض تلقائي</span></label>
+        <label class="check"><input type="checkbox" id="autoLevels"> <span data-i18n="auto_levels">مستويات تلقائية</span></label>
+      </details>
+      <details><summary data-i18n="grp_remove">إزالة عناصر غير مرغوبة</summary>
+        <p class="muted small" data-i18n="remove_help">ارسم فوق العنصر الصغير المراد إزالته (لافتة، سلك، بقعة). لا تستخدمها لإخفاء عيوب حقيقية في العقار.</p>
+        <div class="row gap wrap">
+          <button class="ghost sm" id="maskToggle" data-i18n="brush_on">تفعيل الفرشاة</button>
+          <button class="ghost sm" id="maskClear" data-i18n="clear_mask">مسح التحديد</button>
+          <label class="small"><span data-i18n="brush_size">حجم الفرشاة</span> <input type="range" id="brushSize" min="5" max="80" value="25"></label>
+        </div>
+      </details>
+      <details><summary data-i18n="grp_brand">الشعار والعلامة وبطاقة العقار</summary>
+        <label class="check"><input type="checkbox" id="pLogo"> <span data-i18n="add_logo">إضافة الشعار</span></label>
+        <div class="row gap wrap">
+          <select id="pLogoPos">
+            <option value="bottom-right" data-i18n="pos_br">أسفل يمين</option>
+            <option value="bottom-left" data-i18n="pos_bl">أسفل يسار</option>
+            <option value="top-right" data-i18n="pos_tr">أعلى يمين</option>
+            <option value="top-left" data-i18n="pos_tl">أعلى يسار</option>
+            <option value="center" data-i18n="pos_c">الوسط</option>
+          </select>
+          <label class="small"><span data-i18n="size">الحجم</span> <input type="range" id="pLogoSize" min="0.05" max="0.4" step="0.01" value="0.14"></label>
+          <label class="small"><span data-i18n="opacity">الشفافية</span> <input type="range" id="pLogoOp" min="0.2" max="1" step="0.05" value="0.9"></label>
+        </div>
+        <label class="field"><span data-i18n="wm_text">نص العلامة المائية (اختياري)</span><input id="pWm" placeholder="AL BASMAH"></label>
+        <label class="check"><input type="checkbox" id="pCard"> <span data-i18n="add_card">إضافة بطاقة العقار (المواصفات، السعر، الهاتف، الشعار)</span></label>
+        <select id="pCardLang"><option value="ar">العربية</option><option value="en">English</option></select>
+      </details>
+      <details open><summary data-i18n="grp_output">التصدير</summary>
+        <div class="row gap wrap">
+          <label class="field"><span data-i18n="format">المقاس</span>
+            <select id="pFormat">
+              <option value="original" data-i18n="f_original">الحجم الأصلي</option>
+              <option value="instagram_post">Instagram 4:5 (1080×1350)</option>
+              <option value="square">Square 1:1 (1080)</option>
+              <option value="story">Story / Reels 9:16 (1080×1920)</option>
+              <option value="landscape">Landscape 16:9 (1920×1080)</option>
+              <option value="landscape_4k">4K 16:9 (3840×2160)</option>
+              <option value="web" data-i18n="f_web">مواقع العقارات (2048)</option>
+              <option value="whatsapp">WhatsApp (1600)</option>
+            </select></label>
+          <label class="field"><span data-i18n="fit">طريقة الملاءمة</span>
+            <select id="pFit">
+              <option value="pad_blur" data-i18n="fit_blur">كامل العقار + خلفية ضبابية</option>
+              <option value="pad_black" data-i18n="fit_black">كامل العقار + خلفية سوداء</option>
+              <option value="crop" data-i18n="fit_crop">قص لملء الإطار</option>
+            </select></label>
+          <label class="field"><span data-i18n="filetype">الصيغة</span>
+            <select id="pOut"><option value="jpg">JPG</option><option value="png">PNG</option></select></label>
+        </div>
+      </details>
+
+      <div class="actions">
+        <button class="ghost" id="pReset" data-i18n="reset">إعادة الضبط</button>
+        <button class="ghost" id="pPreview" data-i18n="preview">معاينة</button>
+        <button class="gold-btn" id="pExport" data-i18n="export_one">تصدير الصورة</button>
+      </div>
+      <div class="batch">
+        <label class="check"><input type="checkbox" id="pAutoEach" checked> <span data-i18n="auto_each">تحليل كل صورة تلقائيًا في الدفعة</span></label>
+        <button class="gold-btn wide" id="pBatch"><span data-i18n="export_batch">تصدير الصور المحددة دفعة واحدة</span> (<span id="selCount">0</span>)</button>
+      </div>
+      <div class="job" id="photoJob"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= VIDEO ========================= -->
+<section id="tab-video" class="tabpane">
+  <label class="dropzone" id="videoDrop">
+    <input type="file" id="videoInput" accept="video/*,audio/*,.mov,.mp4,.m4v,.mp3,.m4a,.wav" multiple hidden>
+    <div class="dz-icon">⬆</div>
+    <div data-i18n="drop_videos">اسحب الفيديوهات أو ملفات الموسيقى هنا أو اضغط للاختيار</div>
+    <div class="muted small" data-i18n="originals_safe">الملفات الأصلية تُحفظ كما هي ولا يتم تعديلها أبدًا</div>
+  </label>
+  <div class="upbar hidden" id="videoUp"><div></div><span></span></div>
+
+  <div class="video-layout">
+    <div>
+      <h3 data-i18n="media_bin">ملفات الفيديو</h3>
+      <div class="bin" id="videoBin"></div>
+      <h3 data-i18n="timeline">التسلسل (الترتيب والقص)</h3>
+      <div class="timeline" id="timeline"><div class="muted small" data-i18n="timeline_empty">أضف مقاطع من القائمة أعلاه</div></div>
+      <div class="panel player-box hidden" id="playerBox">
+        <video id="player" controls playsinline preload="metadata"></video>
+        <div class="row gap wrap">
+          <button class="ghost sm" id="setIn" data-i18n="set_in">بداية المقطع من هنا</button>
+          <button class="ghost sm" id="setOut" data-i18n="set_out">نهاية المقطع من هنا</button>
+          <span class="muted small" id="playerInfo"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel controls">
+      <div class="chips" id="videoStyles"></div>
+      <div class="analysis hidden" id="videoAnalysis"></div>
+      <details open><summary data-i18n="grp_grade">تصحيح الألوان (Color Grading)</summary><div id="g_vgrade"></div></details>
+      <details open><summary data-i18n="grp_fix">التثبيت والصوت</summary>
+        <label class="check"><input type="checkbox" id="vStab"> <span data-i18n="stabilize">تثبيت اهتزاز الكاميرا</span></label>
+        <label class="check"><input type="checkbox" id="vKeepAudio" checked> <span data-i18n="keep_audio">الإبقاء على صوت الفيديو</span></label>
+        <label class="check"><input type="checkbox" id="vDenoiseAudio"> <span data-i18n="denoise_audio">إزالة ضوضاء الصوت وتحسينه</span></label>
+        <label class="check"><input type="checkbox" id="vLetterbox"> <span data-i18n="letterbox">أشرطة سينمائية (2.39:1)</span></label>
+      </details>
+      <details open><summary data-i18n="grp_music">الموسيقى والانتقالات</summary>
+        <label class="field"><span data-i18n="music">الموسيقى</span><select id="vMusic"></select></label>
+        <label class="small"><span data-i18n="music_vol">مستوى الموسيقى</span> <input type="range" id="vMusicVol" min="0.05" max="1" step="0.05" value="0.35"></label>
+        <div class="row gap wrap">
+          <label class="field"><span data-i18n="transition">الانتقال</span>
+            <select id="vTrans">
+              <option value="fade">Fade</option><option value="dissolve">Dissolve</option><option value="fadeblack">Fade to black</option>
+              <option value="smoothleft">Smooth slide</option><option value="slideleft">Slide</option><option value="wipeleft">Wipe</option>
+              <option value="circleopen">Circle open</option><option value="zoomin">Zoom in</option><option value="none" data-i18n="none">بدون</option>
+            </select></label>
+          <label class="field"><span data-i18n="trans_dur">المدة (ث)</span><input type="number" id="vTransDur" value="0.8" min="0.2" max="2" step="0.1"></label>
+        </div>
+      </details>
+      <details open><summary data-i18n="grp_texts">النصوص (عربي / English)</summary>
+        <div id="vTexts"></div>
+        <button class="ghost sm" id="addText" data-i18n="add_text">+ إضافة نص</button>
+      </details>
+      <details><summary data-i18n="grp_brand">الشعار والعلامة وبطاقة العقار</summary>
+        <label class="check"><input type="checkbox" id="vLogo"> <span data-i18n="add_logo">إضافة الشعار</span></label>
+        <label class="check"><input type="checkbox" id="vCard"> <span data-i18n="add_card">إضافة بطاقة العقار (المواصفات، السعر، الهاتف، الشعار)</span></label>
+        <div class="row gap wrap">
+          <label class="field"><span data-i18n="card_from">تظهر البطاقة من الثانية</span><input type="number" id="vCardStart" value="1" min="0" step="0.5"></label>
+          <label class="field"><span data-i18n="card_lang">لغة البطاقة</span><select id="vCardLang"><option value="ar">العربية</option><option value="en">English</option></select></label>
+        </div>
+        <label class="check"><input type="checkbox" id="vEnd"> <span data-i18n="end_card">بطاقة ختامية (الشعار + السعر + التواصل)</span></label>
+      </details>
+      <details open><summary data-i18n="grp_output">التصدير</summary>
+        <div class="row gap wrap">
+          <label class="field"><span data-i18n="preset">المنصة والجودة</span>
+            <select id="vPreset">
+              <option value="landscape_1080">MP4 1080p (1920×1080)</option>
+              <option value="landscape_4k">MP4 4K (3840×2160)</option>
+              <option value="reels">Instagram Reels (1080×1920)</option>
+              <option value="tiktok">TikTok (1080×1920)</option>
+              <option value="square">Instagram 1:1 (1080×1080)</option>
+              <option value="whatsapp">WhatsApp 720p</option>
+              <option value="whatsapp_vertical">WhatsApp 720p (عمودي)</option>
+            </select></label>
+          <label class="field"><span data-i18n="fit">طريقة الملاءمة</span>
+            <select id="vFit">
+              <option value="crop" data-i18n="fit_crop">قص لملء الإطار</option>
+              <option value="pad_blur" data-i18n="fit_blur">كامل العقار + خلفية ضبابية</option>
+              <option value="pad_black" data-i18n="fit_black">كامل العقار + خلفية سوداء</option>
+            </select></label>
+        </div>
+      </details>
+      <div class="actions">
+        <button class="ghost" id="vPreview" data-i18n="preview_fast">معاينة سريعة</button>
+        <button class="gold-btn" id="vExport" data-i18n="export_video">تصدير الفيديو</button>
+      </div>
+      <div class="job" id="videoJob"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= BRAND ========================= -->
+<section id="tab-brand" class="tabpane">
+  <div class="brand-layout">
+    <div class="panel">
+      <h3 data-i18n="identity">الهوية</h3>
+      <div class="logo-box" id="logoBox"><span class="muted" data-i18n="no_logo">لم يتم رفع شعار</span></div>
+      <label class="ghost btn-file"><input type="file" id="logoInput" accept="image/png,image/*" hidden><span data-i18n="upload_logo">رفع الشعار (PNG شفاف مفضّل)</span></label>
+      <label class="field"><span data-i18n="company_ar">اسم الشركة (عربي)</span><input data-k="company_ar"></label>
+      <label class="field"><span data-i18n="company_en">اسم الشركة (English)</span><input data-k="company_en" dir="ltr"></label>
+      <label class="field"><span data-i18n="phone">رقم التواصل</span><input data-k="phone" dir="ltr" inputmode="tel"></label>
+      <label class="field"><span data-i18n="website">الموقع الإلكتروني</span><input data-k="website" dir="ltr"></label>
+    </div>
+    <div class="panel">
+      <h3 data-i18n="property">بيانات العقار</h3>
+      <p class="muted small" data-i18n="property_note">تُكتب البيانات كما هي فقط. النظام لا يغيّر أي مواصفات حقيقية للعقار.</p>
+      <div class="two">
+        <label class="field"><span data-i18n="title_ar">العنوان (عربي)</span><input data-p="title_ar"></label>
+        <label class="field"><span data-i18n="title_en">العنوان (English)</span><input data-p="title_en" dir="ltr"></label>
+        <label class="field"><span data-i18n="price">السعر</span><input data-p="price" inputmode="numeric" dir="ltr"></label>
+        <label class="field"><span data-i18n="currency">العملة</span><select data-p="currency"><option>AED</option><option>USD</option><option>SAR</option></select></label>
+        <label class="field"><span data-i18n="beds">غرف النوم</span><input data-p="beds" inputmode="numeric"></label>
+        <label class="field"><span data-i18n="baths">الحمّامات</span><input data-p="baths" inputmode="numeric"></label>
+        <label class="field"><span data-i18n="area">المساحة</span><input data-p="area" inputmode="numeric" dir="ltr"></label>
+        <label class="field"><span data-i18n="unit">الوحدة</span><select data-p="area_unit"><option value="sqft">sq.ft / قدم²</option><option value="sqm">sqm / م²</option></select></label>
+        <label class="field"><span data-i18n="loc_ar">الموقع (عربي)</span><input data-p="location_ar"></label>
+        <label class="field"><span data-i18n="loc_en">الموقع (English)</span><input data-p="location_en" dir="ltr"></label>
+        <label class="field"><span data-i18n="extra_ar">ميزة إضافية (عربي)</span><input data-p="extra_ar"></label>
+        <label class="field"><span data-i18n="extra_en">ميزة إضافية (English)</span><input data-p="extra_en" dir="ltr"></label>
+      </div>
+      <div class="actions"><button class="gold-btn" id="saveBrand" data-i18n="save">حفظ</button><span class="muted small" id="saveMsg"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= LIBRARY ========================= -->
+<section id="tab-library" class="tabpane">
+  <div class="row between"><h3 data-i18n="exports">الملفات المصدّرة</h3><button class="ghost sm" id="refreshLib" data-i18n="refresh">تحديث</button></div>
+  <div id="jobsList"></div>
+  <h3 data-i18n="originals">الملفات الأصلية (محفوظة دون تعديل)</h3>
+  <div class="grid" id="origList"></div>
+</section>
+</main>
+<footer class="muted small">Al Basmah AI Media Studio · MVP 0.1</footer>
+<script src="app.js"></script>
+</body>
+</html>
