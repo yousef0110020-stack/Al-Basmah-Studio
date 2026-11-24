@@ -10,6 +10,7 @@ REPO_URL="${REPO_URL:-https://github.com/yousef0110020-stack/al-basmah-studio.gi
 if [ ${#STUDIO_PASSWORD} -lt 10 ]; then echo "STUDIO_PASSWORD must be set (10+ characters)" >&2; exit 1; fi
 # ---------------------------------------------------------------------------
 set -eux
+touch /var/log/albasmah-setup.log && chmod 600 /var/log/albasmah-setup.log
 exec > /var/log/albasmah-setup.log 2>&1
 export DEBIAN_FRONTEND=noninteractive
 # 4 GB swap so 4K video renders never run out of memory
