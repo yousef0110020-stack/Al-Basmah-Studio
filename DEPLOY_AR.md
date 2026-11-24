@@ -12,13 +12,18 @@
 * السرعة المتوقعة: تقريبًا نصف سرعة بيئة الاختبار، أي قرابة 3 دقائق لفيديو Reels مدته 16 ثانية مع التثبيت.
 
 ### الخطوات (كلها من Safari على الآيفون)
-1. **الكود على GitHub**: أنشئ حسابًا على github.com، ثم مستودعًا فارغًا باسم `al-basmah-studio`، ثم اربط GitHub بـ Claude. بعدها أرفع الكود أنا.
+1. **الكود على GitHub**: تم. الكود موجود في github.com/yousef0110020-stack/al-basmah-studio
 2. **حساب Oracle**: سجّل على oracle.com/cloud/free، واختر منطقة قريبة مثل UAE East (Dubai).
 3. **إنشاء الخادم**: من Compute ثم Instances ثم Create instance:
    * Image: **Ubuntu 24.04** (aarch64)
    * Shape: **VM.Standard.A1.Flex** بمعالجين و12GB
    * Networking: فعّل "Assign a public IPv4 address"
-   * Advanced options ثم Management ثم **Cloud-init script**: الصق محتوى `deploy/oracle-cloud-init.sh` بعد تعديل السطرين في أعلاه (كلمة المرور ورابط المستودع).
+   * Advanced options ثم Management ثم **Cloud-init script**، والصق هذه الأسطر الثلاثة بعد كتابة كلمة مرورك (10 أحرف على الأقل) بين علامتي التنصيص:
+     ```
+     #!/bin/bash
+     export STUDIO_PASSWORD='كلمة-المرور-هنا'
+     curl -fsSL https://raw.githubusercontent.com/yousef0110020-stack/al-basmah-studio/main/deploy/oracle-cloud-init.sh | bash
+     ```
 4. **فتح المنافذ**: من صفحة الخادم افتح Subnet ثم Security List ثم Add Ingress Rules، وأضف قاعدة للمنفذ 80 وأخرى للمنفذ 443، ومصدرهما `0.0.0.0/0`.
 5. انتظر 10 إلى 15 دقيقة، ثم افتح الرابط: `https://` + عنوان IP العام بشرطات بدل النقاط + `.sslip.io`
    مثال: عنوان IP هو `129.151.10.20`، فيكون الرابط `https://129-151-10-20.sslip.io`

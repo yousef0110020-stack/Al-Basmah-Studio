@@ -1,10 +1,13 @@
 #!/bin/bash
 # Al Basmah AI Media Studio - one-shot server setup for a fresh Ubuntu 24.04 VM
 # (Oracle Cloud Always Free Ampere A1, or any Ubuntu VPS).
-# Paste this whole file into "Cloud-init script" when creating the VM.
-# EDIT THE TWO LINES BELOW FIRST:
-STUDIO_PASSWORD='ضع-هنا-كلمة-مرور-قوية-12-حرفًا-على-الأقل'
-REPO_URL='https://github.com/yousef0110020-stack/al-basmah-studio.git'
+# Short form for the Oracle "Cloud-init script" box (3 lines, only the password to type):
+#   #!/bin/bash
+#   export STUDIO_PASSWORD='your-strong-password'
+#   curl -fsSL https://raw.githubusercontent.com/yousef0110020-stack/al-basmah-studio/main/deploy/oracle-cloud-init.sh | bash
+STUDIO_PASSWORD="${STUDIO_PASSWORD:-}"
+REPO_URL="${REPO_URL:-https://github.com/yousef0110020-stack/al-basmah-studio.git}"
+if [ ${#STUDIO_PASSWORD} -lt 10 ]; then echo "STUDIO_PASSWORD must be set (10+ characters)" >&2; exit 1; fi
 # ---------------------------------------------------------------------------
 set -eux
 exec > /var/log/albasmah-setup.log 2>&1
